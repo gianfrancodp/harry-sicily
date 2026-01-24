@@ -3,6 +3,10 @@
 **Event Date:** January 19-20, 2026  
 **Location:** Ionian Coast
 
+![screenshot](readme_assets/screenshot.png)
+
+# [GO to the map!](https://gianfrancodp.github.io/harry-sicily/home.html)
+
 A collaborative WebGIS project designed to map and visualize social media testimonials (videos, photos, posts) regarding the "Harry Cyclone" event.
 
 ## 🎯 General Objectives
