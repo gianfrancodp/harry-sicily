@@ -29,7 +29,7 @@ If you have found a social media post relevant to the event, please follow these
 
 1. **Fork and Clone** the repository to your local machine:
     ```bash
-    git clone [https://github.com/your-username/harry-cyclone-map.git](https://github.com/your-username/harry-cyclone-map.git)
+    git clone https://github.com/gianfrancodp/harry-sicily
     ```
 
 2. **Open the Data**:
