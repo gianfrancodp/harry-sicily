@@ -284,6 +284,44 @@
             background-color: rgba(255, 255, 255, 0.7);
             font-size: 0.75rem;
         }
+
+        /* Legend styles */
+        .map-legend {
+            position: absolute;
+            bottom: 50px;
+            right: 10px;
+            background-color: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 0.875rem;
+            z-index: 999;
+        }
+
+        .legend-title {
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #111827;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .legend-label {
+            color: #374151;
+        }
     </style>
 </head>
 <body>
@@ -330,6 +368,31 @@
                 <p class="footer-text">Powered by: <a href="https://gianfrancodp.github.io" target="_blank">Gianfranco Di Pietro</a> ~ 💡 Click on markers to view details. Basemap: OpenStreetMap</p>
             </div>
         </div>
+
+        <!-- Legend -->
+        <div class="map-legend" id="mapLegend">
+            <div class="legend-title">Classification</div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #dc2626;"></div>
+                <span class="legend-label">Damages</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #f97316;"></div>
+                <span class="legend-label">General</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #a855f7;"></div>
+                <span class="legend-label">Flooding</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2563eb;"></div>
+                <span class="legend-label">Wave action</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #9ca3af;"></div>
+                <span class="legend-label">Null</span>
+            </div>
+        </div>
     </div>
 
     <!-- OpenLayers Library -->
@@ -373,21 +436,64 @@
             format: new ol.format.GeoJSON(),
         });
 
-        // Style for markers
-        const pointStyle = new ol.style.Style({
-            image: new ol.style.Circle({
-                radius: 8,
-                fill: new ol.style.Fill({ color: '#2563eb' }),
-                stroke: new ol.style.Stroke({ color: '#1e40af', width: 2 }),
-            }),
-        });
+        // Color scale dictionary for Type classification
+        const typeColorMap = {
+            'Damages': '#dc2626',        // red
+            'General': '#f97316',        // orange
+            'Flooding': '#a855f7',       // purple
+            'Wave action': '#2563eb',    // blue
+            'Null': '#9ca3af'            // grey
+        };
+
+        // Dynamic style function based on Type
+        const getPointStyle = function(feature) {
+            const type = feature.get('Type');
+            const color = typeColorMap[type] || '#9ca3af';
+            
+            return new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 8,
+                    fill: new ol.style.Fill({ color: color }),
+                    stroke: new ol.style.Stroke({ color: '#1e40af', width: 2 }),
+                }),
+            });
+        };
 
         const vectorLayer = new ol.layer.Vector({
             source: vectorSource,
-            style: pointStyle,
+            style: getPointStyle,
         });
 
         map.addLayer(vectorLayer);
+
+        // Make legend draggable
+        const legend = document.getElementById('mapLegend');
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        legend.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            const rect = legend.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+            legend.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging) {
+                legend.style.right = (window.innerWidth - e.clientX - dragOffsetX) + 'px';
+                legend.style.bottom = (window.innerHeight - e.clientY - dragOffsetY) + 'px';
+                legend.style.left = 'auto';
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            isDragging = false;
+            legend.style.cursor = 'grab';
+        });
+
+        legend.style.cursor = 'grab';
 
         // DOM elements
         const loadingOverlay = document.getElementById('loadingOverlay');
@@ -457,7 +563,7 @@
 
                     // Build popup content
                     let popupContent = `
-                        <!-- <div class="popup-header">Point #${props.pkuid}</div> -->
+                        <div class="popup-header">Type: ${props.Type || 'Unknown'} - id #${props.pkuid}</div>
                         <div class="popup-section">
                             <div class="popup-label">Published:</div>
                             <div class="popup-value">${dateStr}</div>
