@@ -444,6 +444,17 @@
                         })
                         : 'N/A';
 
+                    // Compute favicon fallback (Google favicons service)
+                    let faviconSrc = '';
+                    try {
+                        if (props.URL) {
+                            const urlObj = new URL(props.URL);
+                            faviconSrc = `https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=128`;
+                        }
+                    } catch (e) {
+                        faviconSrc = '';
+                    }
+
                     // Build popup content
                     let popupContent = `
                         <!-- <div class="popup-header">Point #${props.pkuid}</div> -->
@@ -474,7 +485,7 @@
                     popupContent += `
                         <div class="popup-divider">
                             <a href="${props.URL}" target="_blank" rel="noopener noreferrer" class="popup-button">
-                                View Content
+                                View Content ${faviconSrc ? `<img src="${faviconSrc}" alt="favicon" style="width:16px;height:16px;border-radius:3px;margin-left:8px;vertical-align:middle;" onerror="this.style.display='none'">` : ''}
                             </a>
                         </div>
                     `;
