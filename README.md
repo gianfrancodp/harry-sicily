@@ -2,10 +2,9 @@
 
 **Event Date:** January 19-20, 2026  
 **Location:** Ionian Coast
+# [GO to the map!](https://gianfrancodp.github.io/harry-sicily/home.html)
 
 ![screenshot](readme_assets/screenshot.png)
-
-# [GO to the map!](https://gianfrancodp.github.io/harry-sicily/home.html)
 
 A collaborative WebGIS project designed to map and visualize social media testimonials (videos, photos, posts) regarding the "Harry Cyclone" event.
 
@@ -43,6 +42,7 @@ If you have found a social media post relevant to the event, please follow these
     When you click on the map, a form will appear. Please fill in the following fields:
     * `pkuid`: Assign a unique integer ID (increment the last known ID).
     * `URL`: The full link to the social media post (e.g., Facebook Reel, Instagram Video).
+    * `Type`: A classification of the content
     * `Data_pubblicazione_URL`: The date/time of the post in ISO format (e.g., `2026-01-20T16:59:30`).
     * `note`: (Optional) Brief description or credits (e.g., "Photo by ANSA").
 5. **Save Changes**:
@@ -56,10 +56,12 @@ If you have found a social media post relevant to the event, please follow these
 
 We are also open to improvements for the visualization interface!
 The project uses:
+
 * **HTML5 / CSS3**
 * **OpenLayers v10.7.0** (JS Library)
 
 If you want to improve the UI, add filters, or fix bugs:
+
 1. Edit `home.html`.
 2. Test your changes locally.
 3. Submit a Pull Request describing your changes.
@@ -68,11 +70,19 @@ If you want to improve the UI, add filters, or fix bugs:
 
 ## 🛠️ How to Run Locally
 
-To view the map on your computer, you cannot simply double-click `home.html` because browsers block loading local external files (CORS policy). You need a simple local server.
+To view the map on your computer, you cannot simply double-click `home.html` because browsers block loading local external files (CORS policy). You need a simple local server
 
 **Do you like Python?**
+
 ```bash
 # Run this command in the project folder
 python3 -m http.server
 # Then open http://localhost:8000/home.html in your browser
+```
+
+**Disable web security (not recommended)**
+
+For example if using Google Chrome on MacOS:
+```bash
+open -na "Google Chrome" --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
 ```
